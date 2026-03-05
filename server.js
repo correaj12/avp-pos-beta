@@ -64,6 +64,43 @@ app.get("/productos", async (req, res) => {
   const result = await pool.query("SELECT * FROM productos ORDER BY id DESC");
   res.json(result.rows);
 });
+app.post("/venta", async (req, res) => {
+
+const { carrito, total } = req.body
+
+const fecha = new Date()
+
+const venta = await pool.query(
+"INSERT INTO ventas (fecha,total_usd,total_bs) VALUES($1,$2,$3) RETURNING id",
+[fecha,total,0]
+)
+
+const venta_id = venta.rows[0].id
+
+for (let item of carrito){
+
+const prod = await pool.query(
+"SELECT id,stock FROM productos WHERE nombre=$1",
+[item.nombre]
+)
+
+let producto = prod.rows[0]
+
+await pool.query(
+"UPDATE productos SET stock = stock - $1 WHERE id=$2",
+[item.cantidad || 1, producto.id]
+)
+
+await pool.query(
+"INSERT INTO ventas_detalle(venta_id,producto_id,cantidad,precio) VALUES($1,$2,$3,$4)",
+[venta_id,producto.id,1,item.precio]
+)
+
+}
+
+res.json({message:"Venta registrada"})
+
+})
 
 app.post("/productos", async (req, res) => {
   const { nombre, categoria, precio_compra, tipo_margen, valor_margen, stock } = req.body;
