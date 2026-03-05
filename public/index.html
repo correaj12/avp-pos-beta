@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>AVP POS</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f5f5f5;
+padding:20px;
+}
+
+h1{
+color:#c40000;
+}
+
+button{
+padding:12px;
+margin:5px;
+border:none;
+background:#c40000;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+.producto{
+background:white;
+padding:10px;
+margin:5px;
+border-radius:6px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>AVP 1979 POS</h1>
+
+<h3>Categorías</h3>
+
+<button>Chucherías</button>
+<button>Snacks</button>
+<button>Desayunos</button>
+<button>Almuerzos</button>
+<button>Bebidas</button>
+
+<h3>Productos</h3>
+
+<div id="productos"></div>
+
+<script>
+
+async function cargarProductos(){
+
+let res = await fetch("/productos")
+let data = await res.json()
+
+let cont = document.getElementById("productos")
+
+data.forEach(p=>{
+
+let div = document.createElement("div")
+div.className="producto"
+
+div.innerHTML = p.nombre + " - $" + p.precio_venta
+
+cont.appendChild(div)
+
+})
+
+}
+
+cargarProductos()
+
+</script>
+
+</body>
+</html>
