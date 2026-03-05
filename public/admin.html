@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<title>Administrar Productos</title>
+
+<style>
+
+body{
+font-family:Arial;
+background:#f2f2f2;
+padding:20px;
+}
+
+input,select{
+padding:10px;
+margin:5px;
+width:200px;
+}
+
+button{
+padding:10px;
+background:#c40000;
+color:white;
+border:none;
+border-radius:5px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>Administración de Productos</h1>
+
+<input id="nombre" placeholder="Nombre producto">
+
+<input id="categoria" placeholder="Categoría">
+
+<input id="precio_compra" placeholder="Precio compra">
+
+<select id="tipo_margen">
+<option value="porcentaje">Margen %</option>
+<option value="monto">Margen $</option>
+</select>
+
+<input id="valor_margen" placeholder="Valor margen">
+
+<input id="stock" placeholder="Stock">
+
+<br><br>
+
+<button onclick="guardar()">Guardar producto</button>
+
+<h2>Productos cargados</h2>
+
+<div id="lista"></div>
+
+<script>
+
+async function guardar(){
+
+let data = {
+
+nombre:document.getElementById("nombre").value,
+categoria:document.getElementById("categoria").value,
+precio_compra:document.getElementById("precio_compra").value,
+tipo_margen:document.getElementById("tipo_margen").value,
+valor_margen:document.getElementById("valor_margen").value,
+stock:document.getElementById("stock").value
+
+}
+
+await fetch("/productos",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify(data)
+
+})
+
+alert("Producto guardado")
+
+cargar()
+
+}
+
+async function cargar(){
+
+let res = await fetch("/productos")
+let data = await res.json()
+
+let div = document.getElementById("lista")
+
+div.innerHTML=""
+
+data.forEach(p=>{
+
+let item=document.createElement("div")
+
+item.innerHTML = p.nombre + " | $" + p.precio_venta + " | Stock: " + p.stock
+
+div.appendChild(item)
+
+})
+
+}
+
+cargar()
+
+</script>
+
+</body>
+
+</html>
