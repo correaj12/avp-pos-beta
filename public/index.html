@@ -31,6 +31,16 @@ background:white;
 padding:10px;
 margin:5px;
 border-radius:6px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+#carrito{
+background:white;
+padding:10px;
+border-radius:6px;
+margin-top:20px;
 }
 
 </style>
@@ -53,7 +63,18 @@ border-radius:6px;
 
 <div id="productos"></div>
 
+<h3>Carrito</h3>
+
+<div id="carrito"></div>
+
+<h2>Total $: <span id="total">0</span></h2>
+
+<button onclick="cobrar()">COBRAR</button>
+
 <script>
+
+let carrito = []
+let total = 0
 
 async function cargarProductos(){
 
@@ -62,16 +83,59 @@ let data = await res.json()
 
 let cont = document.getElementById("productos")
 
+cont.innerHTML = ""
+
 data.forEach(p=>{
 
 let div = document.createElement("div")
 div.className="producto"
 
-div.innerHTML = p.nombre + " - $" + p.precio_venta
+div.innerHTML = `
+${p.nombre} - $${p.precio_venta}
+<button onclick="agregar('${p.nombre}', ${p.precio_venta})">Agregar</button>
+`
 
 cont.appendChild(div)
 
 })
+
+}
+
+function agregar(nombre, precio){
+
+carrito.push({nombre,precio})
+
+total += Number(precio)
+
+renderCarrito()
+
+}
+
+function renderCarrito(){
+
+let c = document.getElementById("carrito")
+c.innerHTML = ""
+
+carrito.forEach(p=>{
+
+let div = document.createElement("div")
+div.innerText = p.nombre + " $" + p.precio
+c.appendChild(div)
+
+})
+
+document.getElementById("total").innerText = total.toFixed(2)
+
+}
+
+function cobrar(){
+
+alert("Venta registrada por $" + total)
+
+carrito=[]
+total=0
+
+renderCarrito()
 
 }
 
