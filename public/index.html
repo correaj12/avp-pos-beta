@@ -129,7 +129,32 @@ document.getElementById("total").innerText = total.toFixed(2)
 }
 
 function cobrar(){
+async function cobrar(){
 
+await fetch("/venta",{
+
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+carrito:carrito,
+total:total
+})
+
+})
+
+alert("Venta registrada")
+
+carrito=[]
+total=0
+
+renderCarrito()
+
+cargarProductos()
+
+}
 alert("Venta registrada por $" + total)
 
 carrito=[]
