@@ -11,7 +11,50 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: { rejectUnauthorized: false }
 });
+async function crearTablas() {
 
+await pool.query(`
+CREATE TABLE IF NOT EXISTS categorias (
+ id SERIAL PRIMARY KEY,
+ nombre VARCHAR(100)
+);
+`);
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS productos (
+ id SERIAL PRIMARY KEY,
+ nombre VARCHAR(150),
+ categoria VARCHAR(100),
+ precio_compra NUMERIC,
+ tipo_margen VARCHAR(20),
+ valor_margen NUMERIC,
+ precio_venta NUMERIC,
+ stock NUMERIC,
+ imagen TEXT
+);
+`);
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS proveedores (
+ id SERIAL PRIMARY KEY,
+ nombre VARCHAR(150),
+ telefono VARCHAR(50)
+);
+`);
+
+await pool.query(`
+CREATE TABLE IF NOT EXISTS ventas (
+ id SERIAL PRIMARY KEY,
+ fecha DATE,
+ total_usd NUMERIC,
+ total_bs NUMERIC
+);
+`);
+
+console.log("Tablas listas");
+}
+
+crearTablas();
 app.get("/", (req, res) => {
   res.send("AVP POS BETA Activo");
 });
